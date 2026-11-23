@@ -10,7 +10,11 @@ export const TEX_SIZE = 1024
  */
 export function neckEdgeY(xf: number, side: Side): number {
   const dx = (xf - 500) / 120
-  if (Math.abs(dx) < 1) return 100 + (side === 'back' ? 50 : 160) * (1 - dx * dx)
+    if (Math.abs(dx) < 1) {
+      if (side === 'back') return 100 + 50 * (1 - dx * dx)
+      // front: rounded V-neck
+      return 100 + 160 * (1 - Math.sqrt(dx * dx + 0.02) / Math.sqrt(1.02))
+    }
   return 100 + ((xf < 500 ? 380 - xf : xf - 620) * 60) / 170
 }
 
@@ -70,6 +74,34 @@ export function drawPattern(
       break // 'solid': nothing to add
   }
 
+    // 2b. Raglan sleeve panels: slightly darker, with stitched seams
+  for (const mirror of [false, true]) {
+    const X = (x: number) => (mirror ? 1000 - x : x)
+    ctx.beginPath()
+    ctx.moveTo(X(380), 100)
+    ctx.lineTo(X(210), 160)
+    ctx.lineTo(X(50), 330)
+    ctx.lineTo(X(140), 400)
+    ctx.lineTo(X(240), 300)
+    ctx.closePath()
+    ctx.fillStyle = 'rgba(0,0,0,0.12)'
+    ctx.fill()
+    ctx.lineWidth = 3
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)'
+    ctx.beginPath()
+    ctx.moveTo(X(380), 100)
+    ctx.lineTo(X(240), 300)
+    ctx.stroke()
+    ctx.setLineDash([8, 5])
+    ctx.lineWidth = 2
+    ctx.strokeStyle = 'rgba(255,255,255,0.45)'
+    ctx.beginPath()
+    ctx.moveTo(X(372), 112)
+    ctx.lineTo(X(236), 308)
+    ctx.stroke()
+    ctx.setLineDash([])
+  }
+
   // 3. Collar band and cuff bands (trim color)
   ctx.strokeStyle = trim
   ctx.lineWidth = 56
@@ -93,10 +125,14 @@ export function drawPattern(
   ctx.setLineDash([9, 6])
   ctx.lineWidth = 2
   ctx.strokeStyle = 'rgba(0,0,0,0.3)'
-  for (const y of [868, 884]) {
+  for (const dy of [0, 16]) {
     ctx.beginPath()
-    ctx.moveTo(240, y)
-    ctx.lineTo(760, y)
+    for (let x = 240; x <= 760; x += 10) {
+      const nx = (x - 500) / 260
+      const y = 868 + dy + 35 * nx * nx
+      if (x === 240) ctx.moveTo(x, y)
+      else ctx.lineTo(x, y)
+    }
     ctx.stroke()
   }
   ctx.setLineDash([])

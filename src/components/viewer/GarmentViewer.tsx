@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Environment, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import Garment from './Garment'
+import GarmentGLB from './GarmentGLB'
 
 export type View = 'front' | 'back'
 
@@ -39,10 +39,15 @@ export default function GarmentViewer({ view, autoRotate, onGl }: Props) {
       gl={{ preserveDrawingBuffer: true, antialias: true }}
       onCreated={({ gl }) => onGl?.(gl)}
     >
-      <hemisphereLight args={['#ffffff', '#8899aa', 1.6]} />
-      <directionalLight position={[5, 7, 9]} intensity={2.4} />
-      <directionalLight position={[-6, 3, -9]} intensity={1.2} />
-      <Garment />
+      <hemisphereLight args={['#ffffff', '#8899aa', 0.6]} />
+      <directionalLight position={[5, 7, 9]} intensity={1.4} />
+      <directionalLight position={[-6, 3, -9]} intensity={0.8} />
+      <Suspense fallback={null}>
+        <GarmentGLB />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Environment preset="studio" />
+      </Suspense>
       <OrbitControls
         makeDefault
         enablePan={false}

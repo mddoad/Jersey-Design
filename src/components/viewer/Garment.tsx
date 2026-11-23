@@ -28,12 +28,15 @@ function useCanvasTexture() {
 
 function Fabric({ map, bump }: { map: THREE.Texture; bump: THREE.Texture }) {
   return (
-    <meshStandardMaterial
+    <meshPhysicalMaterial
       map={map}
       bumpMap={bump}
-      bumpScale={0.5}
+      bumpScale={0.3}
       side={THREE.DoubleSide}
-      roughness={0.92}
+      roughness={0.85}
+      sheen={0.8}
+      sheenRoughness={0.45}
+      sheenColor="#cccccc"
     />
   )
 }

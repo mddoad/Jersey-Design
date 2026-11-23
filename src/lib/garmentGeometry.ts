@@ -73,24 +73,33 @@ function buildGrid(
   return geo
 }
 
-/** Torso: a rounded tube with shoulder slope, neck opening and a slight hem flare. */
+/** Torso: shaped body with V/round neck, slim waist, curved hem and cloth folds. */
 export function buildTorso(side: Side): THREE.BufferGeometry {
   const back = side === 'back'
   const sign = back ? -1 : 1
   return buildGrid(
-    52,
-    44,
+    72,
+    60,
     (a, r) => {
-      const nx = -1 + 2 * a // -1 (left seam) .. +1 (right seam)
-      const xf = 500 + nx * 260 // flat X
-      const yf = lerp(900, neckEdgeY(xf, side), r) // flat Y (hem -> shoulder)
+      const nx = -1 + 2 * a
+      const xf = 500 + nx * 260
+      const hem = 900 + 35 * nx * nx // curved hem, lower at the sides
+      const yf = lerp(hem, neckEdgeY(xf, side), r)
       const y = (500 - yf) * 0.01
-      const x = nx * (2.6 + 0.14 * (1 - r))
+      // width: slim waist, fuller chest, slight flare at the hem
+      const waist = 0.16 * Math.exp(-(((r - 0.3) / 0.22) ** 2))
+      const chest = 0.07 * Math.exp(-(((r - 0.72) / 0.2) ** 2))
+      const x = nx * (2.6 + 0.1 * (1 - r) - waist + chest)
       const depth = 0.95 + 0.12 * Math.sin(Math.min(1, r * 1.1) * Math.PI * 0.8)
       const zBody = depth * Math.pow(1 - Math.pow(Math.abs(nx), 2.4), 1 / 2.4)
       const zNeck = Math.abs(x) < 1.2 ? 0.9 * Math.sqrt(1 - (x / 1.2) ** 2) : 0
       let z = lerp(zBody, zNeck, smoothstep(0.8, 1, r))
-      z *= 1 + 0.05 * Math.sin(y * 2.4 + x * 1.7) // soft fabric folds
+      // cloth folds: drape lines, waist wrinkles and a gentle sway
+      z *=
+        1 +
+        0.045 * Math.sin(y * 2.4 + x * 1.7) +
+        0.03 * Math.sin(y * 6.2 - x * 3.4) +
+        0.025 * Math.sin(x * 7.5 + y * 1.2)
       return {
         p: [x, y, sign * z],
         uv: [(back ? 1000 - xf : xf) / 1000, 1 - yf / 1000],
@@ -128,7 +137,8 @@ export function buildSleeve(hand: -1 | 1, side: Side): THREE.BufferGeometry {
       const s = -0.2 + 1.2 * i // starts slightly inside the torso
       const phi = c * Math.PI // half circle: top -> front/back -> underside
       const sc = Math.min(1, Math.max(0, s))
-      const rad = lerp(SLEEVE.rootRadius, SLEEVE.cuffRadius, sc)
+      const rad =
+        lerp(SLEEVE.rootRadius, SLEEVE.cuffRadius, sc) * (1 + 0.05 * Math.sin(s * 9 + c * 5))
       const cx = SLEEVE.origin[0] + SLEEVE.dir[0] * SLEEVE.length * s
       const cy = SLEEVE.origin[1] + SLEEVE.dir[1] * SLEEVE.length * s
       const px = cx + rad * Math.cos(phi) * TOP[0]

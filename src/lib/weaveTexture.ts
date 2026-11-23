@@ -17,6 +17,6 @@ export function createWeaveTexture(): THREE.CanvasTexture {
   }
   const texture = new THREE.CanvasTexture(canvas)
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-  texture.repeat.set(70, 70)
+  texture.repeat.set(45, 45)
   return texture
 }
