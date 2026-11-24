@@ -6,7 +6,7 @@ import type { DesignColors } from '../../types/design'
 const FIELDS: { key: keyof DesignColors; label: string }[] = [
   { key: 'primary', label: 'Primary' },
   { key: 'secondary', label: 'Secondary (pattern)' },
-  { key: 'trim', label: 'Collar and cuffs' },
+  { key: 'trim', label: 'Collar and cuffs (rings)' },
   { key: 'text', label: 'Name and number' },
 ]
 
@@ -33,14 +33,14 @@ export default function ColorControls() {
 
       <Section title="Colors">
         {FIELDS.map((f) => (
-          <label key={f.key} className="my-2 flex items-center justify-between text-sm">
-            {f.label}
+          <label key={f.key} className="my-2 flex items-center gap-3 text-sm">
             <input
               type="color"
               value={colors[f.key]}
               onChange={(e) => setColor(f.key, e.target.value)}
               className="h-8 w-12 cursor-pointer rounded border border-slate-300"
             />
+            {f.label}
           </label>
         ))}
       </Section>
