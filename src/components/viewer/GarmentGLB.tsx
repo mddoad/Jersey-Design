@@ -223,6 +223,7 @@ export default function GarmentGLB() {
         if (part === 'Material.001') removeShoulderPiping(mesh, upperY)
         mesh.material = trimMaterial
       }
+      
       else if (BODY_PARTS.includes(part)) mesh.material = body
       // anything else (small inside labels) keeps its own material
     })

@@ -6,6 +6,8 @@ import SelectColor from '../pages/SelectColor'
 import Editor from '../pages/Editor'
 import SharedDesign from '../pages/SharedDesign'
 import CartPage from '../features/cart/CartPage'
+import CheckoutPage from '../pages/CheckoutPage'
+import OrderSuccess from '../pages/OrderSuccess'
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
         <Route path="/sport/:sport/cut/:cut/color/:color" element={<Editor />} />
         <Route path="/d/:code" element={<SharedDesign />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

@@ -11,8 +11,12 @@ export interface ColorOption extends Option {
   hex: string
 }
 
-export const MIN_ORDER = 10
+export const MIN_ORDER = 1
 export const QUOTE_EMAIL = 'sales@yourcompany.com' // change this
+
+/** Price per jersey in paisa (BDT). 1500 BDT = 150000 paisa. Adjust as needed. */
+export const UNIT_PRICE_CENTS = 150000 // ৳1,500.00 per jersey
+export const CURRENCY = 'bdt'
 
 export const SPORTS: Option[] = [
   { id: 'football', label: 'Football' },
